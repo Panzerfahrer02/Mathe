@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Linear Equations Trainer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>Linear Equations Trainer 🧮</h1>
+    <p class="subtitle">
+      Lerne und übe lineare Gleichungen direkt im Browser.
+    </p>
+
+    <div class="controls">
+      <label for="mode-select">Modus wählen:</label>
+      <select id="mode-select">
+        <option value="theory">Theorie</option>
+        <option value="type1">Typ 1: ax + b = c</option>
+        <option value="type2">Typ 2: ax + b = cx + d</option>
+        <option value="mixed">Gemischt</option>
+      </select>
+
+      <button id="new-task-btn">Neue Aufgabe</button>
+    </div>
+
+    <div id="theory-box" class="card hidden">
+      <h2>Theorie: Lineare Gleichungen</h2>
+      <div id="theory-content"></div>
+    </div>
+
+    <div id="exercise-box" class="card hidden">
+      <h2>Aufgabe</h2>
+      <p id="equation-text" class="equation"></p>
+
+      <div class="input-row">
+        <label for="answer-input">Deine Lösung für x = </label>
+        <input id="answer-input" type="text" inputmode="decimal" />
+        <button id="check-btn">Prüfen</button>
+      </div>
+
+      <p id="feedback" class="feedback"></p>
+
+      <h3>Schritt-für-Schritt-Lösung</h3>
+      <pre id="solution-steps" class="solution"></pre>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
