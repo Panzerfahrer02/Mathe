@@ -16,9 +16,11 @@
       <label for="mode-select">Modus wählen:</label>
       <select id="mode-select">
         <option value="theory">Theorie</option>
-        <option value="type1">Typ 1: ax + b = c</option>
-        <option value="type2">Typ 2: ax + b = cx + d</option>
-        <option value="mixed">Gemischt</option>
+        <option value="type1">Trainer: ax + b = c</option>
+        <option value="type2">Trainer: ax + b = cx + d</option>
+        <option value="mixed">Trainer: Gemischt</option>
+        <!-- 🆕 NEU: Lernsax-Aufgaben -->
+        <option value="exam">Lernsax-Aufgaben (gemischt)</option>
       </select>
 
       <button id="new-task-btn">Neue Aufgabe</button>
@@ -29,13 +31,14 @@
       <div id="theory-content" class="theory-text"></div>
     </div>
 
-
     <div id="exercise-box" class="card hidden">
       <h2>Aufgabe</h2>
       <p id="equation-text" class="equation"></p>
 
+      <p id="input-hint" class="input-hint hidden"></p>
+
       <div class="input-row">
-        <label for="answer-input">Deine Lösung für x = </label>
+        <label for="answer-input">Deine Eingabe: </label>
         <input id="answer-input" type="text" inputmode="decimal" />
         <button id="check-btn">Prüfen</button>
       </div>
