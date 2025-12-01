@@ -63,6 +63,22 @@ const theoryHtml = `
     Setze deine Lösung wieder in die ursprüngliche Gleichung ein.
     Wenn links und rechts der gleiche Wert herauskommt, ist die Lösung korrekt.
   </p>
+
+  <h3>7. Diskriminante bei quadratischen Gleichungen</h3>
+  <p>
+    Eine quadratische Gleichung hat die Form <code>ax² + bx + c = 0</code> (mit <code>a ≠ 0</code>).
+    Die <strong>Diskriminante</strong> ist die Zahl
+    <code>Δ = b² - 4ac</code>.
+  </p>
+  <ul>
+    <li><code>Δ &gt; 0</code>: zwei verschiedene reelle Lösungen</li>
+    <li><code>Δ = 0</code>: genau eine (doppelte) reelle Lösung</li>
+    <li><code>Δ &lt; 0</code>: keine reelle Lösung</li>
+  </ul>
+  <p>
+    In der Mitternachtsformel <code>x = (-b ± √Δ) / (2a)</code> steckt Δ unter der Wurzel.
+    Ist Δ negativ, kann man die Wurzel in den reellen Zahlen nicht berechnen.
+  </p>
 `;
 
 function showTheory() {
@@ -258,14 +274,14 @@ const examTasks = [
       if (values.length !== 1) {
         return {
           ok: false,
-          feedback: "Bitte genau eine Zahl für x eingeben (z.B. 1.25 oder 5/4).",
+          feedback: "Bitte genau eine Zahl für x eingeben (z.B. 1.2 oder 3/2).",
           steps,
         };
       }
       const x = values[0];
       const ok = Math.abs(x - correct) < 1e-6;
       const feedback = ok
-        ? "✅ Richtig! x = 5/4 ist eine Lösung."
+        ? "✅ Richtig! Deine Zahl erfüllt die Gleichung."
         : `❌ Nicht ganz. Deine Lösung ist x = ${x}. Schau dir die Rechenschritte an und vergleiche.`;
       return { ok, feedback, steps };
     },
@@ -314,7 +330,7 @@ const examTasks = [
     id: "quadratisch",
     title: "Quadratische Gleichung",
     promptHtml: "Löse die Gleichung <code>2x² + 5x - 3 = 0</code>.",
-    hint: "Gib beide Lösungen durch Semikolon getrennt ein, z.B. 1; 2.",
+    hint: "Gib beide Lösungen durch Semikolon getrennt ein (z.B. 1; 2).",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
@@ -324,7 +340,14 @@ const examTasks = [
         "   a = 2, b = 5, c = -3",
         "   Δ = b² - 4ac = 5² - 4·2·(-3) = 25 + 24 = 49",
         "",
-        "2) Lösungen:",
+        "2) Bedeutung von Δ:",
+        "   Δ > 0  → zwei verschiedene Lösungen",
+        "   Δ = 0  → genau eine (doppelte) Lösung",
+        "   Δ < 0  → keine reelle Lösung",
+        "",
+        "3) Hier ist Δ = 49 > 0, also erwarten wir zwei Lösungen.",
+        "",
+        "4) Lösungen berechnen:",
         "   x₁,₂ = (-b ± √Δ) / (2a) = (-5 ± 7) / 4",
         "   x₁ = (-5 + 7)/4 = 2/4 = 1/2",
         "   x₂ = (-5 - 7)/4 = -12/4 = -3",
@@ -336,7 +359,7 @@ const examTasks = [
         return {
           ok: false,
           feedback:
-            "Bitte zwei Lösungen eingeben, getrennt z.B. mit Semikolon: -3; 1/2.",
+            "Bitte zwei Lösungen eingeben, getrennt z.B. mit Semikolon: a; b.",
           steps,
         };
       }
@@ -348,8 +371,8 @@ const examTasks = [
         Math.abs(userSorted[1] - correctSorted[1]) < 1e-6;
 
       const feedback = ok
-        ? "✅ Richtig! Die Lösungen sind x = -3 und x = 1/2."
-        : "❌ Nicht ganz. Schau dir die Mitternachtsformel in den Schritten genau an.";
+        ? "✅ Richtig! Deine beiden Zahlen sind Lösungen der Gleichung."
+        : "❌ Nicht ganz. Schau dir die Mitternachtsformel und die Diskriminante Δ in den Schritten genau an.";
       return { ok, feedback, steps };
     },
   },
@@ -358,18 +381,29 @@ const examTasks = [
     title: "Parameter q für genau eine Lösung",
     promptHtml:
       "Bestimme einen Wert für <code>q</code>, so dass die Gleichung <code>4x² + qx + 9 = 0</code> genau eine Lösung hat.",
-    hint: "Überlege: Wann hat eine quadratische Gleichung genau eine Lösung?",
+    hint: "Nutze die Diskriminante Δ = b² - 4ac und überlege, wann es genau eine Lösung gibt.",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
         "Gleichung: 4x² + qx + 9 = 0",
         "",
-        "Für genau eine Lösung muss die Diskriminante Δ = 0 sein:",
-        "   Δ = q² - 4·4·9 = q² - 144",
-        "   Δ = 0 ⇒ q² - 144 = 0 ⇒ q² = 144",
-        "   ⇒ q = ±12",
+        "1) Allgemeine Form einer quadratischen Gleichung:",
+        "   ax² + bx + c = 0 mit Diskriminante Δ = b² - 4ac.",
         "",
-        "→ Geeignete Werte: q = 12 oder q = -12."
+        "2) Bedeutung der Diskriminante:",
+        "   Δ > 0  → zwei verschiedene Lösungen",
+        "   Δ = 0  → genau eine (doppelte) Lösung",
+        "   Δ < 0  → keine reelle Lösung",
+        "",
+        "3) Hier: a = 4, b = q, c = 9",
+        "   Δ = q² - 4·4·9 = q² - 144",
+        "",
+        "4) Für genau eine Lösung brauchen wir Δ = 0:",
+        "   q² - 144 = 0",
+        "   q² = 144",
+        "   q = ±12",
+        "",
+        "→ Geeignete Werte sind z.B. q = 12 oder q = -12."
       ].join("\n");
 
       if (values.length !== 1) {
@@ -382,8 +416,8 @@ const examTasks = [
       const q = values[0];
       const ok = Math.abs(q - 12) < 1e-6 || Math.abs(q + 12) < 1e-6;
       const feedback = ok
-        ? "✅ Richtig! Dieser q-Wert führt zu genau einer Lösung."
-        : "❌ Nicht ganz. Nutze die Bedingung Δ = 0 und rechne q² - 144 = 0.";
+        ? "✅ Richtig! Dein q-Wert macht Δ = 0, also gibt es genau eine Lösung."
+        : "❌ Nicht ganz. Setze Δ = q² - 144 gleich 0 und löse nach q.";
       return { ok, feedback, steps };
     },
   },
@@ -425,8 +459,8 @@ const examTasks = [
       const x = values[0];
       const ok = Math.abs(x - 13) < 1e-6;
       const feedback = ok
-        ? "✅ Richtig! Die gedachte Zahl ist 13."
-        : "❌ Nicht ganz. Stell dir die Gleichung 2x = 26 auf und löse sie.";
+        ? "✅ Richtig! Deine Zahl erfüllt die Bedingung."
+        : "❌ Nicht ganz. Überlege dir zuerst die Gleichung und löse dann 2x = 26.";
       return { ok, feedback, steps };
     },
   },
@@ -438,7 +472,7 @@ const examTasks = [
       "<code>I) &nbsp; 0,9x - 3 = y</code><br>" +
       "<code>II) 3x + 2y = 6</code><br>" +
       "Löse das Gleichungssystem rechnerisch.",
-    hint: "Gib x und y mit Semikolon getrennt ein, z.B. 1; 2.",
+    hint: "Gib x und y mit Semikolon getrennt ein (z.B. 1; 2).",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
@@ -476,7 +510,7 @@ const examTasks = [
       const ok =
         Math.abs(x - 2.5) < 1e-6 && Math.abs(y + 0.75) < 1e-6;
       const feedback = ok
-        ? "✅ Richtig! x = 2,5 und y = -0,75."
+        ? "✅ Richtig! Deine Werte sind eine Lösung des LGS."
         : "❌ Nicht ganz. Versuche, zuerst y aus I zu bestimmen und dann in II einzusetzen.";
       return { ok, feedback, steps };
     },
@@ -489,7 +523,7 @@ const examTasks = [
       "<code>I)  &nbsp; y = x - 1</code><br>" +
       "<code>II) &nbsp; y - 3x = 1</code><br>" +
       "Bestimme den Schnittpunkt der beiden Geraden.",
-    hint: "Gib x und y mit Semikolon getrennt ein, z.B. -1; -2.",
+    hint: "Gib x und y mit Semikolon getrennt ein (z.B. 0; 0).",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
@@ -517,7 +551,7 @@ const examTasks = [
       if (values.length !== 2) {
         return {
           ok: false,
-          feedback: "Bitte x und y als zwei Zahlen eingeben, z.B. -1; -2.",
+          feedback: "Bitte x und y als zwei Zahlen eingeben, z.B. a; b.",
           steps,
         };
       }
@@ -525,7 +559,7 @@ const examTasks = [
       const ok =
         Math.abs(x + 1) < 1e-6 && Math.abs(y + 2) < 1e-6;
       const feedback = ok
-        ? "✅ Richtig! Schnittpunkt: (-1 | -2)."
+        ? "✅ Richtig! Deine Werte sind der Schnittpunkt der beiden Geraden."
         : "❌ Nicht ganz. Nutze Einsetzen: y = x - 1 in die zweite Gleichung.";
       return { ok, feedback, steps };
     },
@@ -601,7 +635,6 @@ function newTask() {
       equationText.innerHTML = `<code>${a}x + ${b} = ${c}x + ${d}</code>`;
     }
   } else if (mode === "exam") {
-    // neue zufällige Reihenfolge, wenn Stapel fertig
     if (examOrder.length === 0 || examPointer >= examOrder.length) {
       initExamOrder();
     }
