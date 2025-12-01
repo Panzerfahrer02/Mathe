@@ -85,6 +85,14 @@ function chooseRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// Fisher–Yates Shuffle
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
 // Zahl oder Bruch (z.B. "5/4") parsen
 function parseNumberToken(token) {
   const t = token.trim().replace(",", ".");
@@ -214,23 +222,17 @@ function solveType2Steps({ a, b, c, d, xSolution }) {
 }
 
 // ================= Lernsax-Aufgaben =================
-// Aufgaben, die stilistisch zu deinen Fotos passen:
-// - Klammergleichung
-// - Ungleichung mit Beispiel-Lösung
-// - Quadratische Gleichung
-// - Parameter q für Doppellösung
-// - Textaufgabe „gedachte Zahl“
-// - Zwei lineare Gleichungssysteme
 
 const examTasks = [
   {
     id: "klammergleichung",
     title: "Gleichung mit Klammern",
     promptHtml:
-      "Löse die Gleichung: <code>4x - (2 + 9x) = 15x - 27</code>.",
-    hint: "Gib die Lösung für x als Zahl oder Bruch ein (z.&nbsp;B. <code>5/4</code>).",
+      'Löse die Gleichung: <code>4x - (2 + 9x) = 15x - 27</code>.',
+    hint: "Gib die Lösung für x als Zahl oder Bruch ein (z.B. 3/2).",
     check(raw) {
       const values = parseNumberList(raw);
+      const correct = 5 / 4;
       const steps = [
         "Ausgangsgleichung: 4x - (2 + 9x) = 15x - 27",
         "",
@@ -238,17 +240,17 @@ const examTasks = [
         "   4x - (2 + 9x) = 4x - 2 - 9x = -5x - 2",
         "   → -5x - 2 = 15x - 27",
         "",
-        "2) Alle x-Terme auf eine Seite bringen (hier rechts):",
+        "2) Alle x-Terme auf eine Seite bringen (z.B. rechts):",
         "   -5x - 2 = 15x - 27   | +5x",
         "   -2 = 20x - 27",
         "",
-        "3) Konstante auf die andere Seite:",
+        "3) Konstante auf die andere Seite bringen:",
         "   -2 = 20x - 27   | +27",
         "   25 = 20x",
         "",
         "4) Durch 20 teilen:",
         "   25 = 20x   | :20",
-        "   x = 25/20 = 5/4 = 1,25",
+        "   x = 25/20 = 5/4",
         "",
         "5) Probe durch Einsetzen möglich."
       ].join("\n");
@@ -256,17 +258,15 @@ const examTasks = [
       if (values.length !== 1) {
         return {
           ok: false,
-          feedback:
-            "Bitte genau eine Zahl für x eingeben (z.B. 1.25 oder 5/4).",
+          feedback: "Bitte genau eine Zahl für x eingeben (z.B. 1.25 oder 5/4).",
           steps,
         };
       }
       const x = values[0];
-      const correct = 5 / 4;
       const ok = Math.abs(x - correct) < 1e-6;
       const feedback = ok
-        ? "✅ Richtig! x = 5/4 ist die Lösung."
-        : `❌ Nicht ganz. Deine Lösung ist x = ${x}, korrekt ist x = 5/4.`;
+        ? "✅ Richtig! x = 5/4 ist eine Lösung."
+        : `❌ Nicht ganz. Deine Lösung ist x = ${x}. Schau dir die Rechenschritte an und vergleiche.`;
       return { ok, feedback, steps };
     },
   },
@@ -275,8 +275,8 @@ const examTasks = [
     title: "Ungleichung mit Beispiel-Lösung",
     promptHtml:
       "Löse die Ungleichung <code>-5 &lt; 3x + 10</code>.<br>" +
-      "Gib eine <strong>negative ganze Zahl</strong> an, die Lösung der Ungleichung ist.",
-    hint: "Beispiel-Eingabe: <code>-2</code>.",
+      "Gib eine <strong>negative ganze Zahl</strong> an, die eine Lösung dieser Ungleichung ist.",
+    hint: "Gib eine negative ganze Zahl ein.",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
@@ -290,8 +290,8 @@ const examTasks = [
         "   -15 < 3x   | :3",
         "   -5 < x",
         "",
-        "→ Lösungsmenge in ℚ: alle Zahlen mit x > -5.",
-        "→ Negative ganze Lösungen sind z.B.: -4, -3, -2, -1."
+        "→ Alle Zahlen mit x > -5 sind Lösungen.",
+        "→ Negative ganze Lösungen sind z.B. -4, -3, -2, -1."
       ].join("\n");
 
       if (values.length !== 1) {
@@ -306,7 +306,7 @@ const examTasks = [
       const ok = isInt && x < 0 && -5 < 3 * x + 10;
       const feedback = ok
         ? `✅ Passt! x = ${x} ist eine negative ganze Lösung.`
-        : `❌ Das passt nicht. Gesucht ist eine negative ganze Zahl, für die -5 < 3x + 10 gilt (z.B. -4 oder -1).`;
+        : "❌ Das passt nicht. Gesucht ist eine negative ganze Zahl, für die -5 < 3x + 10 gilt.";
       return { ok, feedback, steps };
     },
   },
@@ -314,13 +314,13 @@ const examTasks = [
     id: "quadratisch",
     title: "Quadratische Gleichung",
     promptHtml: "Löse die Gleichung <code>2x² + 5x - 3 = 0</code>.",
-    hint: "Gib beide Lösungen durch <code>;</code> getrennt ein, z.&nbsp;B. <code>-3; 1/2</code>.",
+    hint: "Gib beide Lösungen durch Semikolon getrennt ein, z.B. 1; 2.",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
         "Gleichung: 2x² + 5x - 3 = 0",
         "",
-        "1) Mit der Mitternachtsformel:",
+        "1) Mitternachtsformel:",
         "   a = 2, b = 5, c = -3",
         "   Δ = b² - 4ac = 5² - 4·2·(-3) = 25 + 24 = 49",
         "",
@@ -336,7 +336,7 @@ const examTasks = [
         return {
           ok: false,
           feedback:
-            "Bitte beide Lösungen eingeben, getrennt z.B. mit Semikolon: -3; 1/2",
+            "Bitte zwei Lösungen eingeben, getrennt z.B. mit Semikolon: -3; 1/2.",
           steps,
         };
       }
@@ -349,7 +349,7 @@ const examTasks = [
 
       const feedback = ok
         ? "✅ Richtig! Die Lösungen sind x = -3 und x = 1/2."
-        : `❌ Nicht ganz. Korrekt sind x = -3 und x = 1/2.`;
+        : "❌ Nicht ganz. Schau dir die Mitternachtsformel in den Schritten genau an.";
       return { ok, feedback, steps };
     },
   },
@@ -358,7 +358,7 @@ const examTasks = [
     title: "Parameter q für genau eine Lösung",
     promptHtml:
       "Bestimme einen Wert für <code>q</code>, so dass die Gleichung <code>4x² + qx + 9 = 0</code> genau eine Lösung hat.",
-    hint: "Tipp: Bei genau einer Lösung ist die Diskriminante Δ = 0.",
+    hint: "Überlege: Wann hat eine quadratische Gleichung genau eine Lösung?",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
@@ -382,8 +382,8 @@ const examTasks = [
       const q = values[0];
       const ok = Math.abs(q - 12) < 1e-6 || Math.abs(q + 12) < 1e-6;
       const feedback = ok
-        ? `✅ Richtig! q = ${q} führt zu genau einer Lösung.`
-        : "❌ Nicht ganz. Geeignete Werte wären z.B. q = 12 oder q = -12.";
+        ? "✅ Richtig! Dieser q-Wert führt zu genau einer Lösung."
+        : "❌ Nicht ganz. Nutze die Bedingung Δ = 0 und rechne q² - 144 = 0.";
       return { ok, feedback, steps };
     },
   },
@@ -394,7 +394,7 @@ const examTasks = [
       "Denke dir eine natürliche Zahl x.<br>" +
       "Addiere zu deiner Zahl das 7-fache dieser Zahl. Teile das Ergebnis durch 4 und erhalte 26.<br>" +
       "Welche Zahl hast du dir gedacht?",
-    hint: "Gib die gedachte Zahl x ein (z.&nbsp;B. <code>13</code>).",
+    hint: "Gib die gedachte Zahl x ein (eine natürliche Zahl).",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
@@ -426,7 +426,7 @@ const examTasks = [
       const ok = Math.abs(x - 13) < 1e-6;
       const feedback = ok
         ? "✅ Richtig! Die gedachte Zahl ist 13."
-        : `❌ Nicht ganz. Korrekt wäre x = 13.`;
+        : "❌ Nicht ganz. Stell dir die Gleichung 2x = 26 auf und löse sie.";
       return { ok, feedback, steps };
     },
   },
@@ -438,7 +438,7 @@ const examTasks = [
       "<code>I) &nbsp; 0,9x - 3 = y</code><br>" +
       "<code>II) 3x + 2y = 6</code><br>" +
       "Löse das Gleichungssystem rechnerisch.",
-    hint: "Gib x und y mit Semikolon getrennt ein, z.&nbsp;B. <code>2,5; -0,75</code>.",
+    hint: "Gib x und y mit Semikolon getrennt ein, z.B. 1; 2.",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
@@ -468,8 +468,7 @@ const examTasks = [
       if (values.length !== 2) {
         return {
           ok: false,
-          feedback:
-            "Bitte x und y als zwei Zahlen eingeben, z.B. 2,5; -0,75.",
+          feedback: "Bitte x und y als zwei Zahlen eingeben, z.B. 2,5; -0,75.",
           steps,
         };
       }
@@ -477,8 +476,8 @@ const examTasks = [
       const ok =
         Math.abs(x - 2.5) < 1e-6 && Math.abs(y + 0.75) < 1e-6;
       const feedback = ok
-        ? "✅ Richtig! Lösung: x = 2,5 ; y = -0,75."
-        : `❌ Nicht ganz. Korrekt ist x = 2,5 und y = -0,75.`;
+        ? "✅ Richtig! x = 2,5 und y = -0,75."
+        : "❌ Nicht ganz. Versuche, zuerst y aus I zu bestimmen und dann in II einzusetzen.";
       return { ok, feedback, steps };
     },
   },
@@ -490,7 +489,7 @@ const examTasks = [
       "<code>I)  &nbsp; y = x - 1</code><br>" +
       "<code>II) &nbsp; y - 3x = 1</code><br>" +
       "Bestimme den Schnittpunkt der beiden Geraden.",
-    hint: "Gib x und y mit Semikolon getrennt ein, z.&nbsp;B. <code>-1; -2</code>.",
+    hint: "Gib x und y mit Semikolon getrennt ein, z.B. -1; -2.",
     check(raw) {
       const values = parseNumberList(raw);
       const steps = [
@@ -518,8 +517,7 @@ const examTasks = [
       if (values.length !== 2) {
         return {
           ok: false,
-          feedback:
-            "Bitte x und y als zwei Zahlen eingeben, z.B. -1; -2.",
+          feedback: "Bitte x und y als zwei Zahlen eingeben, z.B. -1; -2.",
           steps,
         };
       }
@@ -528,11 +526,21 @@ const examTasks = [
         Math.abs(x + 1) < 1e-6 && Math.abs(y + 2) < 1e-6;
       const feedback = ok
         ? "✅ Richtig! Schnittpunkt: (-1 | -2)."
-        : `❌ Nicht ganz. Korrekt ist x = -1 und y = -2.`;
+        : "❌ Nicht ganz. Nutze Einsetzen: y = x - 1 in die zweite Gleichung.";
       return { ok, feedback, steps };
     },
   },
 ];
+
+// Reihenfolge für Lernsax-Aufgaben, damit keine Dopplung entsteht
+let examOrder = [];
+let examPointer = 0;
+
+function initExamOrder() {
+  examOrder = examTasks.map((_, i) => i);
+  shuffle(examOrder);
+  examPointer = 0;
+}
 
 // ================= UI & Steuerung =================
 
@@ -593,8 +601,14 @@ function newTask() {
       equationText.innerHTML = `<code>${a}x + ${b} = ${c}x + ${d}</code>`;
     }
   } else if (mode === "exam") {
-    currentTask = chooseRandom(examTasks);
+    // neue zufällige Reihenfolge, wenn Stapel fertig
+    if (examOrder.length === 0 || examPointer >= examOrder.length) {
+      initExamOrder();
+    }
+    const idx = examOrder[examPointer++];
+    currentTask = examTasks[idx];
     currentType = "exam";
+
     equationText.innerHTML = `<strong>${currentTask.title}</strong><br>${currentTask.promptHtml}`;
     if (currentTask.hint) {
       hintElem.innerHTML = currentTask.hint;
@@ -610,7 +624,7 @@ function checkAnswer() {
   const solutionStepsElem = document.getElementById("solution-steps");
   const raw = answerInput.value.trim();
 
-  // Lernsax-Aufgaben haben eigene Check-Logik
+  // Lernsax-Aufgaben
   if (currentType === "exam") {
     const result = currentTask.check(raw);
     setFeedback(result.feedback, result.ok);
@@ -618,7 +632,7 @@ function checkAnswer() {
     return;
   }
 
-  // Trainer: einfache lineare Gleichungen (eine Zahl als Lösung)
+  // Trainer-Modus: eine Zahl als Lösung
   const normalized = raw.replace(",", ".");
   const userValue = Number(normalized);
   if (Number.isNaN(userValue)) {
@@ -666,7 +680,7 @@ window.addEventListener("DOMContentLoaded", () => {
   newTaskBtn.addEventListener("click", newTask);
   checkBtn.addEventListener("click", checkAnswer);
 
-  // Standard: Theorie anzeigen
+  // Start: Theorie anzeigen
   showTheory();
 });
 
