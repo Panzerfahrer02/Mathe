@@ -110,6 +110,7 @@ h1 {
   border: 1px solid #bfdbfe;
 }
 
+
 /* kleines Koordinatensystem für "Graphen zeichnen" */
 .graph-task-text {
   margin-bottom: 0.4rem;
@@ -121,32 +122,14 @@ h1 {
   height: 260px;
   margin-top: 0.4rem;
   border: 1px solid #d1d5db;
-  background-image:
-    linear-gradient(#e5e7eb 1px, transparent 1px),
-    linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
-  background-size: 20px 20px;
 }
 
-.graph-grid .axis-x,
-.graph-grid .axis-y {
-  position: absolute;
-  background: #111827;
-}
-
-.graph-grid .axis-x {
-  left: 0;
-  top: 50%;
+.graph-grid svg {
   width: 100%;
-  height: 2px;
-}
-
-.graph-grid .axis-y {
-  top: 0;
-  left: 50%;
-  width: 2px;
   height: 100%;
+  display: block;
+  background-color: #f9fafb;
 }
-
 
 /* Hinweis zur Eingabe */
 .input-hint {
