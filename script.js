@@ -76,7 +76,7 @@ const theoryHtml = `
     <li><code>Δ &lt; 0</code>: keine reelle Lösung</li>
   </ul>
   <p>
-    In der Mitternachtsformel <code>x = (-b ± √Δ) / (2a)</code> steckt Δ unter der Wurzel.
+    In der Mitternachtsformel <code>x = (-b ± √Δ) / (2a)</code> sitzt Δ unter der Wurzel.
     Ist Δ negativ, kann man die Wurzel in den reellen Zahlen nicht berechnen.
   </p>
 `;
@@ -348,9 +348,8 @@ const examTasks = [
         "3) Hier ist Δ = 49 > 0, also erwarten wir zwei Lösungen.",
         "",
         "4) Lösungen berechnen:",
-        "   x₁,₂ = (-b ± √Δ) / (2a) = (-5 ± 7) / 4",
-        "   x₁ = (-5 + 7)/4 = 2/4 = 1/2",
-        "   x₂ = (-5 - 7)/4 = -12/4 = -3",
+        "   x₁,₂ = (-5 ± 7) / 4",
+        "   x₁ = 1/2,  x₂ = -3",
         "",
         "→ Lösungen: x₁ = -3, x₂ = 1/2."
       ].join("\n");
@@ -387,8 +386,7 @@ const examTasks = [
       const steps = [
         "Gleichung: 4x² + qx + 9 = 0",
         "",
-        "1) Allgemeine Form einer quadratischen Gleichung:",
-        "   ax² + bx + c = 0 mit Diskriminante Δ = b² - 4ac.",
+        "1) Allgemeine Form ax² + bx + c = 0 mit Δ = b² - 4ac.",
         "",
         "2) Bedeutung der Diskriminante:",
         "   Δ > 0  → zwei verschiedene Lösungen",
@@ -398,10 +396,8 @@ const examTasks = [
         "3) Hier: a = 4, b = q, c = 9",
         "   Δ = q² - 4·4·9 = q² - 144",
         "",
-        "4) Für genau eine Lösung brauchen wir Δ = 0:",
-        "   q² - 144 = 0",
-        "   q² = 144",
-        "   q = ±12",
+        "4) Für genau eine Lösung setzen wir Δ = 0:",
+        "   q² - 144 = 0  ⇒  q² = 144  ⇒  q = ±12",
         "",
         "→ Geeignete Werte sind z.B. q = 12 oder q = -12."
       ].join("\n");
@@ -576,10 +572,39 @@ function initExamOrder() {
   examPointer = 0;
 }
 
+// ================= Graphen zeichnen =================
+
+const graphTasks = [
+  {
+    id: "g1",
+    m: 1,
+    b: 2,
+    text: "Zeichne die Gerade mit Gleichung <code>y = x + 2</code> in das Koordinatensystem.",
+  },
+  {
+    id: "g2",
+    m: -2,
+    b: 1,
+    text: "Zeichne die Gerade mit Gleichung <code>y = -2x + 1</code>.",
+  },
+  {
+    id: "g3",
+    m: 0.5,
+    b: -1,
+    text: "Zeichne die Gerade mit Gleichung <code>y = 0{,}5x - 1</code>.",
+  },
+  {
+    id: "g4",
+    m: -1,
+    b: 0,
+    text: "Zeichne die Gerade mit Gleichung <code>y = -x</code>.",
+  },
+];
+
 // ================= UI & Steuerung =================
 
 let currentTask = null;
-let currentType = null; // "type1", "type2", "exam"
+let currentType = null; // "type1", "type2", "exam", "graph"
 
 function setFeedback(msg, isOk) {
   const feedback = document.getElementById("feedback");
@@ -647,6 +672,20 @@ function newTask() {
       hintElem.innerHTML = currentTask.hint;
       hintElem.classList.remove("hidden");
     }
+  } else if (mode === "graph") {
+    currentTask = chooseRandom(graphTasks);
+    currentType = "graph";
+
+    equationText.innerHTML = `
+      <div class="graph-task-text">${currentTask.text}</div>
+      <div class="graph-grid">
+        <div class="axis-x"></div>
+        <div class="axis-y"></div>
+      </div>
+    `;
+    hintElem.innerHTML =
+      "Gib Steigung m und y-Achsenabschnitt b ein, getrennt durch Semikolon. Beispiel: <code>1; 0</code>.";
+    hintElem.classList.remove("hidden");
   }
 }
 
@@ -662,6 +701,67 @@ function checkAnswer() {
     const result = currentTask.check(raw);
     setFeedback(result.feedback, result.ok);
     solutionStepsElem.textContent = result.steps;
+    return;
+  }
+
+  // Graphen-Modus: m und b prüfen
+  if (currentType === "graph") {
+    const values = parseNumberList(raw);
+    const steps = [];
+    const m = currentTask.m;
+    const b = currentTask.b;
+
+    steps.push(`Gegebene Gerade: y = ${m}x ${b >= 0 ? "+ " + b : "- " + Math.abs(b)}`);
+    steps.push("");
+    steps.push("1) Steigung m und y-Achsenabschnitt b ablesen:");
+    steps.push(`   m = ${m}`);
+    steps.push(`   b = ${b}`);
+    steps.push("");
+    steps.push("2) Koordinatensystem zeichnen (so wie oben im Kästchen):");
+    steps.push("   - x-Achse waagerecht, y-Achse senkrecht");
+    steps.push("   - Nullpunkt (0|0) ist der Schnittpunkt der Achsen");
+    steps.push("");
+    steps.push("3) Punkt auf der y-Achse markieren:");
+    steps.push("   Setze x = 0, dann ist y = b.");
+    steps.push(`   → Erster Punkt: (0 | ${b})`);
+    steps.push("   Diesen Punkt auf der y-Achse eintragen.");
+    steps.push("");
+    steps.push("4) Steigung als \"hoch/runter und rechts\" nutzen:");
+    steps.push("   m = Δy / Δx beschreibt, wie man von einem Punkt zum nächsten geht.");
+    const dy = m;
+    const dx = 1;
+    steps.push(
+      `   Hier z.B.: von einem Punkt 1 nach rechts (Δx = 1) und ${dy >= 0 ? dy + " nach oben" : Math.abs(dy) + " nach unten"} (Δy = ${dy}).`
+    );
+    steps.push("   So erhältst du einen zweiten Punkt der Geraden.");
+    steps.push("");
+    steps.push("5) Gerade zeichnen:");
+    steps.push("   Verbinde die Punkte mit einem Lineal und verlängere die Linie in beide Richtungen.");
+    steps.push("");
+    steps.push("6) Kontrolle:");
+    steps.push("   Wähle einen Punkt auf der Geraden, setze seine x- und y-Werte in die Gleichung ein");
+    steps.push("   und prüfe, ob links und rechts das Gleiche herauskommt.");
+
+    if (values.length !== 2) {
+      setFeedback(
+        "Bitte zwei Zahlen eingeben: zuerst m, dann b (z.B. 1; 0).",
+        false
+      );
+      solutionStepsElem.textContent = steps.join("\n");
+      return;
+    }
+
+    const [mUser, bUser] = values;
+    const ok =
+      Math.abs(mUser - m) < 1e-6 && Math.abs(bUser - b) < 1e-6;
+
+    setFeedback(
+      ok
+        ? "✅ Richtig! Steigung und Achsenabschnitt stimmen."
+        : "❌ Nicht ganz. Vergleiche deine m- und b-Werte mit der Gleichung.",
+      ok
+    );
+    solutionStepsElem.textContent = steps.join("\n");
     return;
   }
 
@@ -716,4 +816,5 @@ window.addEventListener("DOMContentLoaded", () => {
   // Start: Theorie anzeigen
   showTheory();
 });
+
 
