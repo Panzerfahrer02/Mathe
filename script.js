@@ -1,56 +1,83 @@
 // ================= Theorie =================
 
-const theoryText = [
-  "1. Was ist eine lineare Gleichung?",
-  "   Eine lineare Gleichung ist eine Gleichung, in der die Variable x",
-  "   nur mit Exponent 1 vorkommt. Beispiele:",
-  "      2x + 3 = 7",
-  "      -4x + 10 = 2x - 8",
-  "",
-  "2. Ziel beim Lösen:",
-  "   Wir wollen x freistellen:",
-  "      x = (irgendeine Zahl)",
-  "",
-  "3. Erlaubte Umformungen (Äquivalenzumformungen):",
-  "   - Auf beiden Seiten die gleiche Zahl addieren oder subtrahieren",
-  "   - Beide Seiten mit derselben (≠ 0) Zahl multiplizieren oder dividieren",
-  "   Wichtig: Was du links machst, musst du auch rechts machen!",
-  "",
-  "4. Standard-Vorgehen bei ax + b = c:",
-  "   Beispiel: 2x + 3 = 11",
-  "   (1) Konstante auf die andere Seite bringen:",
-  "       2x + 3 = 11      | -3",
-  "       2x = 8",
-  "   (2) Durch den Koeffizienten vor x teilen:",
-  "       2x = 8           | :2",
-  "       x = 4",
-  "",
-  "5. Standard-Vorgehen bei ax + b = cx + d:",
-  "   Beispiel: 3x + 5 = x - 1",
-  "   (1) Alle x auf eine Seite holen:",
-  "       3x + 5 = x - 1   | -x",
-  "       2x + 5 = -1",
-  "   (2) Konstante auf die andere Seite:",
-  "       2x + 5 = -1      | -5",
-  "       2x = -6",
-  "   (3) Durch Koeffizienten teilen:",
-  "       2x = -6          | :2",
-  "       x = -3",
-  "",
-  "6. Probe:",
-  "   Setze deine Lösung wieder in die Ausgangsgleichung ein.",
-  "   Wenn links = rechts, ist die Lösung korrekt."
-].join("\n");
+
+const theoryHtml = `
+  <h3>1. Was ist eine lineare Gleichung?</h3>
+  <p>
+    Eine lineare Gleichung ist eine Gleichung, in der die Variable <strong>x</strong>
+    nur mit Exponent 1 vorkommt.
+  </p>
+  <ul>
+    <li>Beispiele: <code>2x + 3 = 7</code>, <code>-4x + 10 = 2x - 8</code></li>
+  </ul>
+
+  <h3>2. Ziel beim Lösen</h3>
+  <p>
+    Wir wollen <strong>x freistellen</strong>, also am Ende soll da stehen:
+    <code>x = (irgendeine Zahl)</code>.
+  </p>
+
+  <h3>3. Erlaubte Umformungen (Äquivalenzumformungen)</h3>
+  <ul>
+    <li>Auf beiden Seiten die gleiche Zahl addieren oder subtrahieren</li>
+    <li>Beide Seiten mit derselben Zahl (≠ 0) multiplizieren oder dividieren</li>
+    <li><strong>Wichtig:</strong> Was du links machst, musst du auch rechts machen!</li>
+  </ul>
+
+  <h3>4. Standard-Vorgehen bei <code>ax + b = c</code></h3>
+  <p>Beispiel: <code>2x + 3 = 11</code></p>
+  <ol>
+    <li>
+      Konstante auf die andere Seite bringen:<br />
+      <code>2x + 3 = 11 &nbsp; | -3</code><br />
+      <code>2x = 8</code>
+    </li>
+    <li>
+      Durch den Koeffizienten vor x teilen:<br />
+      <code>2x = 8 &nbsp; | :2</code><br />
+      <code>x = 4</code>
+    </li>
+  </ol>
+
+  <h3>5. Standard-Vorgehen bei <code>ax + b = cx + d</code></h3>
+  <p>Beispiel: <code>3x + 5 = x - 1</code></p>
+  <ol>
+    <li>
+      Alle x-Terme auf eine Seite holen:<br />
+      <code>3x + 5 = x - 1 &nbsp; | -x</code><br />
+      <code>2x + 5 = -1</code>
+    </li>
+    <li>
+      Konstante auf die andere Seite bringen:<br />
+      <code>2x + 5 = -1 &nbsp; | -5</code><br />
+      <code>2x = -6</code>
+    </li>
+    <li>
+      Durch den Koeffizienten vor x teilen:<br />
+      <code>2x = -6 &nbsp; | :2</code><br />
+      <code>x = -3</code>
+    </li>
+  </ol>
+
+  <h3>6. Probe</h3>
+  <p>
+    Setze deine Lösung wieder in die ursprüngliche Gleichung ein.
+    Wenn links und rechts der gleiche Wert herauskommt, ist die Lösung korrekt.
+  </p>
+`;
+
+
 
 function showTheory() {
   const theoryBox = document.getElementById("theory-box");
   const exerciseBox = document.getElementById("exercise-box");
   const theoryContent = document.getElementById("theory-content");
 
-  theoryContent.textContent = theoryText;
+  theoryContent.innerHTML = theoryHtml;  // <== statt textContent
   theoryBox.classList.remove("hidden");
   exerciseBox.classList.add("hidden");
 }
+
 
 // ================= Hilfsfunktionen für Zufall =================
 
