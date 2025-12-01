@@ -110,7 +110,7 @@ h1 {
   border: 1px solid #bfdbfe;
 }
 
-/* kleines Koordinatensystem */
+/* kleines Koordinatensystem für "Graphen zeichnen" */
 .graph-task-text {
   margin-bottom: 0.4rem;
 }
@@ -146,6 +146,7 @@ h1 {
   width: 2px;
   height: 100%;
 }
+
 
 /* Hinweis zur Eingabe */
 .input-hint {
