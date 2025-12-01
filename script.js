@@ -237,7 +237,7 @@ function solveType2Steps({ a, b, c, d, xSolution }) {
   return steps.join("\n");
 }
 
-// ================= Lernsax-Aufgaben =================
+// ================= Lernsax-Aufgaben (Exam-Modus) =================
 
 const examTasks = [
   {
@@ -288,7 +288,7 @@ const examTasks = [
   },
   {
     id: "ungleichung",
-    title: "Ungleichung mit Beispiel-Lösung",
+    title: "Ungleichung mit Lösungsmenge",
     promptHtml:
       "Löse die Ungleichung <code>-5 &lt; 3x + 10</code>.<br>" +
       "Gib eine <strong>negative ganze Zahl</strong> an, die eine Lösung dieser Ungleichung ist.",
@@ -601,6 +601,78 @@ const graphTasks = [
   },
 ];
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function renderGraph(m, b, showLine) {
+  const svg = document.getElementById("graph-svg");
+  if (!svg) return;
+
+  // alles löschen
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // Koordinatenbereich: -6 .. 6 in x und y
+  svg.setAttribute("viewBox", "-6 -6 12 12");
+
+  // Gitterlinien
+  for (let i = -6; i <= 6; i++) {
+    // horizontal
+    const h = document.createElementNS(SVG_NS, "line");
+    h.setAttribute("x1", -6);
+    h.setAttribute("y1", i);
+    h.setAttribute("x2", 6);
+    h.setAttribute("y2", i);
+    h.setAttribute("stroke", "#e5e7eb");
+    h.setAttribute("stroke-width", "0.03");
+    svg.appendChild(h);
+
+    // vertikal
+    const v = document.createElementNS(SVG_NS, "line");
+    v.setAttribute("x1", i);
+    v.setAttribute("y1", -6);
+    v.setAttribute("x2", i);
+    v.setAttribute("y2", 6);
+    v.setAttribute("stroke", "#e5e7eb");
+    v.setAttribute("stroke-width", "0.03");
+    svg.appendChild(v);
+  }
+
+  // Achsen
+  const ax = document.createElementNS(SVG_NS, "line");
+  ax.setAttribute("x1", -6);
+  ax.setAttribute("y1", 0);
+  ax.setAttribute("x2", 6);
+  ax.setAttribute("y2", 0);
+  ax.setAttribute("stroke", "#111827");
+  ax.setAttribute("stroke-width", "0.08");
+  svg.appendChild(ax);
+
+  const ay = document.createElementNS(SVG_NS, "line");
+  ay.setAttribute("x1", 0);
+  ay.setAttribute("y1", -6);
+  ay.setAttribute("x2", 0);
+  ay.setAttribute("y2", 6);
+  ay.setAttribute("stroke", "#111827");
+  ay.setAttribute("stroke-width", "0.08");
+  svg.appendChild(ay);
+
+  if (!showLine) return;
+
+  // Gerade einzeichnen (von x = -6 bis x = 6)
+  const x1 = -6;
+  const y1 = m * x1 + b;
+  const x2 = 6;
+  const y2 = m * x2 + b;
+
+  const line = document.createElementNS(SVG_NS, "line");
+  line.setAttribute("x1", x1);
+  line.setAttribute("y1", y1);
+  line.setAttribute("x2", x2);
+  line.setAttribute("y2", y2);
+  line.setAttribute("stroke", "#22c55e");
+  line.setAttribute("stroke-width", "0.09");
+  svg.appendChild(line);
+}
+
 // ================= UI & Steuerung =================
 
 let currentTask = null;
@@ -679,13 +751,15 @@ function newTask() {
     equationText.innerHTML = `
       <div class="graph-task-text">${currentTask.text}</div>
       <div class="graph-grid">
-        <div class="axis-x"></div>
-        <div class="axis-y"></div>
+        <svg id="graph-svg"></svg>
       </div>
     `;
     hintElem.innerHTML =
       "Gib Steigung m und y-Achsenabschnitt b ein, getrennt durch Semikolon. Beispiel: <code>1; 0</code>.";
     hintElem.classList.remove("hidden");
+
+    // Nur Gitter + Achsen, noch ohne Gerade
+    renderGraph(currentTask.m, currentTask.b, false);
   }
 }
 
@@ -704,14 +778,16 @@ function checkAnswer() {
     return;
   }
 
-  // Graphen-Modus: m und b prüfen
+  // Graphen-Modus
   if (currentType === "graph") {
     const values = parseNumberList(raw);
     const steps = [];
     const m = currentTask.m;
     const b = currentTask.b;
 
-    steps.push(`Gegebene Gerade: y = ${m}x ${b >= 0 ? "+ " + b : "- " + Math.abs(b)}`);
+    steps.push(
+      `Gegebene Gerade: y = ${m}x ${b >= 0 ? "+ " + b : "- " + Math.abs(b)}`
+    );
     steps.push("");
     steps.push("1) Steigung m und y-Achsenabschnitt b ablesen:");
     steps.push(`   m = ${m}`);
@@ -731,7 +807,9 @@ function checkAnswer() {
     const dy = m;
     const dx = 1;
     steps.push(
-      `   Hier z.B.: von einem Punkt 1 nach rechts (Δx = 1) und ${dy >= 0 ? dy + " nach oben" : Math.abs(dy) + " nach unten"} (Δy = ${dy}).`
+      `   Hier z.B.: von einem Punkt 1 nach rechts (Δx = 1) und ${
+        dy >= 0 ? dy + " nach oben" : Math.abs(dy) + " nach unten"
+      } (Δy = ${dy}).`
     );
     steps.push("   So erhältst du einen zweiten Punkt der Geraden.");
     steps.push("");
@@ -748,6 +826,8 @@ function checkAnswer() {
         false
       );
       solutionStepsElem.textContent = steps.join("\n");
+      // trotzdem die richtige Gerade anzeigen
+      renderGraph(m, b, true);
       return;
     }
 
@@ -762,6 +842,9 @@ function checkAnswer() {
       ok
     );
     solutionStepsElem.textContent = steps.join("\n");
+
+    // richtige Gerade anzeigen
+    renderGraph(m, b, true);
     return;
   }
 
@@ -816,5 +899,4 @@ window.addEventListener("DOMContentLoaded", () => {
   // Start: Theorie anzeigen
   showTheory();
 });
-
 
