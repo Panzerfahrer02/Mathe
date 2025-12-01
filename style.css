@@ -110,6 +110,43 @@ h1 {
   border: 1px solid #bfdbfe;
 }
 
+/* kleines Koordinatensystem */
+.graph-task-text {
+  margin-bottom: 0.4rem;
+}
+
+.graph-grid {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin-top: 0.4rem;
+  border: 1px solid #d1d5db;
+  background-image:
+    linear-gradient(#e5e7eb 1px, transparent 1px),
+    linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.graph-grid .axis-x,
+.graph-grid .axis-y {
+  position: absolute;
+  background: #111827;
+}
+
+.graph-grid .axis-x {
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+}
+
+.graph-grid .axis-y {
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+}
+
 /* Hinweis zur Eingabe */
 .input-hint {
   font-size: 0.85rem;
@@ -130,7 +167,7 @@ h1 {
   padding: 0.45rem 0.65rem;
   border-radius: 0.6rem;
   border: 1px solid #d1d5db;
-  width: 170px;
+  width: 190px;
 }
 
 #check-btn {
